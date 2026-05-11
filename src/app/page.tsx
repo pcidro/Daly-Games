@@ -50,5 +50,10 @@ export default async function AppPage() {
         </Link>
       </Container>
     </main>
+export default async function AppPage() {
+  return (
+    <div>
+      <h1></h1>
+    </div>
   );
 }
