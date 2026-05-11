@@ -11,7 +11,7 @@ export default async function Header() {
             <Image
               src="/logo.svg"
               alt="logo do site"
-              quality={80}
+              quality={75}
               width={168}
               height={39}
               priority
