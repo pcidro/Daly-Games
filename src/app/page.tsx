@@ -9,10 +9,5 @@ export default async function AppPage() {
         </h1>
       </Container>
     </main>
-export default async function AppPage() {
-  return (
-    <div>
-      <h1></h1>
-    </div>
   );
 }
