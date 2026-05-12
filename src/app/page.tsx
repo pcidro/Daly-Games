@@ -1,12 +1,53 @@
 import Container from "@/components/container";
+import { gameProps } from "@/utils/types/game";
+import Image from "next/image";
+import Link from "next/link";
+import { BsArrowRightSquare } from "react-icons/bs";
 
 export default async function AppPage() {
+  async function getDalyGame() {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_API_URL}//next-api/?api=game_day`,
+        {
+          next: {
+            revalidate: 60,
+          },
+        },
+      );
+      return res.json();
+    } catch (error) {
+      if (error instanceof Error)
+        throw new Error(`Failed to fetch data ${error.message}`);
+    }
+  }
+
+  const dalyGame = (await getDalyGame()) as gameProps;
   return (
     <main className="flex">
       <Container>
         <h1 className="text-center text-xl font-bold mt-8 mb-5">
           Separamos um jogo exclusivo para você!
         </h1>
+        <Link href={`/game/${dalyGame.id}`}>
+          <section className="w-full bg-black rounded-lg">
+            <div className="w-full max-h-96 h-96 relative rounded-lg">
+              <div className="absolute z-20 bottom-0 p-3 flex justify-center items-center gap-3">
+                <p className="font-bold text-xl text-white">{dalyGame.title}</p>
+                <BsArrowRightSquare size={24} color="#fff" />
+              </div>
+              <Image
+                src={dalyGame.image_url}
+                alt={dalyGame.title}
+                priority={true}
+                quality={75}
+                fill={true}
+                className="max-h-96 object-cover rounded-lg opacity-50 hover:opacity-100 transition-all duration-300"
+                sizes="(max-width:768px)100vw, (max-width:1200px) 32vw"
+              />
+            </div>
+          </section>
+        </Link>
       </Container>
     </main>
   );
