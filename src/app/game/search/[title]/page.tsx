@@ -2,18 +2,28 @@ import GameCard from "@/components/gameCard/GameCard";
 import Container from "@/components/container";
 import Input from "@/components/input/Input";
 import { gameProps } from "@/utils/types/game";
+import { Metadata } from "next";
 
 interface SearchProps {
   params: Promise<{ title: string }>;
 }
 
 export default async function Search({ params }: SearchProps) {
-  const { title } = await params;
-  const res = await fetch(
-    `${process.env.NEXT_API_URL}/next-api/?api=game&title=${title}`,
-    { next: { revalidate: 86400 } },
-  );
-  const games: gameProps[] = await res.json();
+  let games: gameProps[] | null = null;
+  try {
+    const { title } = await params;
+    const decodeTitle = decodeURI(title);
+    const res = await fetch(
+      `${process.env.NEXT_API_URL}/next-api/?api=game&title=${decodeTitle}`,
+      { next: { revalidate: 86400 } },
+    );
+    if (!res.ok) return;
+    games = await res.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch data ${error.message}`);
+    }
+  }
 
   return (
     <main className="w-full text-black">
